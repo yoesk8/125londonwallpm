@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { C, TRADES, FACES, STATUS_ORDER, STATUS_LABEL, STATUS_COLOR, Tag } from "@/lib/ui";
 import Building3D from "./Building3D";
 import BuildingList from "./BuildingList";
+import FloorMeta from "./FloorMeta";
 
 export default function BuildingView({ floors, setFloors, canEdit }) {
   const [view, setView] = useState("3D"); // "3D" | "List"
@@ -46,6 +47,10 @@ export default function BuildingView({ floors, setFloors, canEdit }) {
     }
   };
 
+  // Called by FloorMeta after a successful save of owner/notes
+  const updateMeta = (floorId, patch) =>
+    setFloors((fs) => fs.map((f) => (f.id === floorId ? { ...f, ...patch } : f)));
+
   const Toggle = () => (
     <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
       {["3D", "List"].map((v) => (
@@ -68,7 +73,7 @@ export default function BuildingView({ floors, setFloors, canEdit }) {
           Overall <b style={{ color: C.text }}>{pct}%</b>
           {TRADES.map((t) => <span key={t}> · {t} <b style={{ color: C.text }}>{tradePct(t)}%</b></span>)}
         </div>
-        <BuildingList floors={floors} onCycle={cycle} canEdit={canEdit} />
+        <BuildingList floors={floors} onCycle={cycle} onMeta={updateMeta} canEdit={canEdit} />
       </div>
     );
   }
@@ -132,9 +137,7 @@ export default function BuildingView({ floors, setFloors, canEdit }) {
                   </div>
                   <button onClick={() => setSelected(null)} style={{ background: "none", border: "none", color: C.dim, cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}>close ✕</button>
                 </div>
-                <div style={{ fontSize: 13, color: C.dim, margin: "2px 0 10px" }}>
-                  Managed by <span style={{ color: C.text }}>{sel.owner}</span>
-                </div>
+                <FloorMeta floor={sel} canEdit={canEdit} onSaved={updateMeta} />
                 <div style={{ display: "flex", gap: 6, marginBottom: 10, flexWrap: "wrap" }}>
                   {FACES.map((face) => (
                     <button key={face} onClick={() => setSelected({ floor: sel.id, face })} style={{

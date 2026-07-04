@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { C, TRADES, FACES, Tag } from "@/lib/ui";
+import FloorMeta from "./FloorMeta";
 
 // Text alternative to the 3D model: Floor 17 → West face → Cladding: In progress
-export default function BuildingList({ floors, onCycle, canEdit }) {
+export default function BuildingList({ floors, onCycle, onMeta, canEdit }) {
   const [openFloor, setOpenFloor] = useState(null);
 
   const floorDone = (f) =>
@@ -26,7 +27,7 @@ export default function BuildingList({ floors, onCycle, canEdit }) {
               <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 20, fontWeight: 700, minWidth: 64 }}>
                 Floor {f.id}
               </span>
-              <span style={{ fontSize: 12, color: C.dim, flex: 1 }}>{f.owner}</span>
+              <span style={{ fontSize: 12, color: C.dim, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.owner}</span>
               <span style={{ fontSize: 12, color: done === cells ? C.done : C.dim, fontWeight: 700 }}>
                 {done}/{cells}
               </span>
@@ -37,7 +38,8 @@ export default function BuildingList({ floors, onCycle, canEdit }) {
             </button>
 
             {open && (
-              <div style={{ borderTop: `1px solid ${C.line}`, padding: "4px 14px 12px" }}>
+              <div style={{ borderTop: `1px solid ${C.line}`, padding: "10px 14px 12px" }}>
+                <FloorMeta floor={f} canEdit={canEdit} onSaved={onMeta} compact />
                 {FACES.map((face) => (
                   <div key={face} style={{ marginTop: 10 }}>
                     <div style={{ fontSize: 11, fontWeight: 800, color: C.hivis, textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 4 }}>
