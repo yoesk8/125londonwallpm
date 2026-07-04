@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { C, TRADES, Btn, inputStyle } from "@/lib/ui";
+import { C, TRADES, FACES, Btn, inputStyle } from "@/lib/ui";
 import BuildingView from "@/components/BuildingView";
 import TasksView from "@/components/TasksView";
 import InventoryView from "@/components/InventoryView";
@@ -82,14 +82,19 @@ function Dashboard({ session, profile }) {
       setLoading(false);
       return;
     }
-    const statusByFloor = {};
+    // Nest statuses: floor -> face -> trade
+    const byFloor = {};
     (fs.data || []).forEach((r) => {
-      statusByFloor[r.floor_id] = statusByFloor[r.floor_id] || {};
-      statusByFloor[r.floor_id][r.trade] = r.status;
+      byFloor[r.floor_id] = byFloor[r.floor_id] || {};
+      byFloor[r.floor_id][r.face] = byFloor[r.floor_id][r.face] || {};
+      byFloor[r.floor_id][r.face][r.trade] = r.status;
     });
     setFloors((fl.data || []).map((f) => ({
       ...f,
-      status: TRADES.reduce((acc, t) => ({ ...acc, [t]: statusByFloor[f.id]?.[t] || "pending" }), {}),
+      status: FACES.reduce((acc, face) => ({
+        ...acc,
+        [face]: TRADES.reduce((a2, t) => ({ ...a2, [t]: byFloor[f.id]?.[face]?.[t] || "pending" }), {}),
+      }), {}),
     })));
     setTasks(tk.data || []);
     setInv(iv.data || []);
