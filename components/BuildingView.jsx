@@ -83,16 +83,23 @@ export default function BuildingView({ floors, setFloors, canEdit }) {
       <Toggle />
       <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
         <div style={{ flex: "1 1 340px", minHeight: 440, background: C.panel, borderRadius: 10, border: `1px solid ${C.line}`, position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: 12, left: 12, right: 12, zIndex: 2, display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {["Overall", ...TRADES].map((m) => (
-              <button key={m} onClick={() => setMode(m)} style={{
-                background: mode === m ? C.hivis : "rgba(18,22,29,0.85)",
-                color: mode === m ? "#16100B" : C.text,
-                border: `1px solid ${mode === m ? C.hivis : C.line}`,
-                borderRadius: 99, padding: "5px 12px", fontSize: 12, fontWeight: 700,
-                cursor: "pointer", fontFamily: "inherit",
-              }}>{m}{m !== "Overall" ? ` · ${tradePct(m)}%` : ""}</button>
-            ))}
+          <div style={{ position: "absolute", top: 12, left: 12, right: 12, zIndex: 2 }}>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {["Overall", ...TRADES].map((m) => (
+                <button key={m} onClick={() => setMode(m)} style={{
+                  background: mode === m ? C.hivis : "rgba(18,22,29,0.85)",
+                  color: mode === m ? "#16100B" : C.text,
+                  border: `1px solid ${mode === m ? C.hivis : C.line}`,
+                  borderRadius: 99, padding: "5px 12px", fontSize: 12, fontWeight: 700,
+                  cursor: "pointer", fontFamily: "inherit",
+                }}>{m}{m !== "Overall" ? ` · ${tradePct(m)}%` : ""}</button>
+              ))}
+            </div>
+            <div style={{ display: "inline-block", marginTop: 6, fontSize: 11, color: C.dim, background: "rgba(18,22,29,0.85)", padding: "4px 8px", borderRadius: 6 }}>
+              {mode === "Overall"
+                ? "Green = all four trades complete on that face"
+                : `Colouring shows ${mode} only — tap Overall for the all-trades view`}
+            </div>
           </div>
           <Building3D floors={floors} mode={mode} selected={selected} onSelectFace={setSelected} />
           <div style={{ position: "absolute", bottom: 12, left: 12, display: "flex", gap: 12, fontSize: 11, color: C.dim, background: "rgba(18,22,29,0.85)", padding: "6px 10px", borderRadius: 6 }}>
