@@ -1,0 +1,25 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: #12161D;
+  color: #E8ECF1;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: #FF6B1A; color: #16100B; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #12161D; }
+::-webkit-scrollbar-thumb { background: #2E3947; border-radius: 6px; }
+
+select option { background: #1B222C; color: #E8ECF1; }
+
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid #FF6B1A;
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
